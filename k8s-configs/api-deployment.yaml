@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: api
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.network/saleor-backend-tier: "true"
+        io.kompose.service: api
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/saleor/saleor:3.20
+          ports:
+            - containerPort: 8000
+          env:
+            - name: ALLOWED_HOSTS
+              value: localhost,api
+            - name: CELERY_BROKER_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: CELERY_BROKER_URL
+                  name: backend-env
+            - name: DASHBOARD_URL
+              value: http://localhost:9000/
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_URL
+                  name: backend-env
+            - name: DEFAULT_CHANNEL_SLUG
+              valueFrom:
+                configMapKeyRef:
+                  key: DEFAULT_CHANNEL_SLUG
+                  name: common-env
+            - name: DEFAULT_FROM_EMAIL
+              valueFrom:
+                configMapKeyRef:
+                  key: DEFAULT_FROM_EMAIL
+                  name: backend-env
+            - name: EMAIL_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: EMAIL_URL
+                  name: backend-env
+            - name: HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS
+              valueFrom:
+                configMapKeyRef:
+                  key: HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS
+                  name: common-env
+            - name: HTTP_IP_FILTER_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  key: HTTP_IP_FILTER_ENABLED
+                  name: common-env
+            - name: JAEGER_AGENT_HOST
+              value: jaeger
+            - name: SECRET_KEY
+              valueFrom:
+                configMapKeyRef:
+                  key: SECRET_KEY
+                  name: backend-env
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "100m"
+          volumeMounts:
+            - mountPath: /app/media
+              name: saleor-media
+      restartPolicy: Always
+      volumes:
+        - name: saleor-media
+          persistentVolumeClaim:
+            claimName: saleor-media
+
