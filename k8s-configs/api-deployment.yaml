@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: ghcr.io/saleor/saleor:3.20
+          image: gcr.io/isec6000-21457140/saleor-api:2.0
           ports:
             - containerPort: 8000
           env:

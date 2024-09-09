@@ -4,11 +4,11 @@ metadata:
   annotations:
     kompose.cmd: kompose convert
     kompose.version: 1.26.1 (a9d05d509)
-  creationTimestamp: null
   labels:
     io.kompose.service: mailpit
   name: mailpit
 spec:
+  type: LoadBalancer  
   ports:
     - name: "1025"
       port: 1025
@@ -18,5 +18,7 @@ spec:
       targetPort: 8025
   selector:
     io.kompose.service: mailpit
+
 status:
   loadBalancer: {}
+

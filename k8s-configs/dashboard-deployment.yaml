@@ -1,33 +1,54 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.26.1 (a9d05d509)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: dashboard
-  name: dashboard
+  name: saleor-dashboard
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: dashboard
-  strategy: {}
+      app: saleor-dashboard
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert
-        kompose.version: 1.26.1 (a9d05d509)
-      creationTimestamp: null
       labels:
-        io.kompose.service: dashboard
+        app: saleor-dashboard
     spec:
       containers:
-        - image: ghcr.io/saleor/saleor-dashboard:latest
-          name: dashboard
-          ports:
-            - containerPort: 80
-          resources: {}
-      restartPolicy: Always
-status: {}
+      - name: saleor-dashboard
+        image: gcr.io/isec6000-21457140/saleor-dashboard:2.0
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: saleor-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: saleor-dashboard
+  template:
+    metadata:
+      labels:
+        app: saleor-dashboard
+    spec:
+      containers:
+      - name: saleor-dashboard
+        image: gcr.io/isec6000-21457140/saleor-dashboard:2.0
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "16Mi"
+            cpu: "50m"
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+

@@ -24,7 +24,7 @@ spec:
         io.kompose.service: redis
     spec:
       containers:
-        - image: library/redis:7.0-alpine
+        - image: gcr.io/isec6000-21457140/saleor-redis:2.0
           name: redis
           ports:
             - containerPort: 6379
@@ -43,4 +43,3 @@ spec:
         - name: saleor-redis
           persistentVolumeClaim:
             claimName: saleor-redis
-

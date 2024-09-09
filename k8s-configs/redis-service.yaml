@@ -9,7 +9,7 @@ metadata:
     io.kompose.service: redis
   name: redis
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - name: "6379"
       port: 6379
