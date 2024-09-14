@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.27.0 (b0ed6a2c9)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: db
+  name: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.27.0 (b0ed6a2c9)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/saleor-backend-tier: "true"
+        io.kompose.service: db
+    spec:
+      containers:
+        - env:
+            - name: POSTGRES_PASSWORD
+              value: saleor
+            - name: POSTGRES_USER
+              value: saleor
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          image: library/postgres:15-alpine
+          name: db
+          ports:
+            - containerPort: 5432
+          resources: 
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "100m"
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: saleor-db
+            - mountPath: /docker-entrypoint-initdb.d/replica_user.sql
+              name: db-claim1
+      restartPolicy: Always
+      volumes:
+        - name: saleor-db
+          persistentVolumeClaim:
+            claimName: saleor-db
+        - name: db-claim1
+          persistentVolumeClaim:
+            claimName: db-claim1
+status: {}

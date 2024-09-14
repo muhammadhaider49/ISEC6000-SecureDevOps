@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-env
+  labels:
+    io.kompose.service: api-backend-env
+data:
+  CELERY_BROKER_URL: redis://redis:6379/1
+  DATABASE_URL: postgres://saleor:saleor@db/saleor
+  DEFAULT_FROM_EMAIL: noreply@example.com
+  EMAIL_URL: smtp://mailpit:1025
+  SECRET_KEY: changeme
+  ALLOWED_HOSTS: 104.118.236.21,localhost,127.0.0.1   
